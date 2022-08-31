@@ -35,7 +35,7 @@ def getPossiblePrime(n):
       else:
         return primeCandidate
 
-# Run the Miller-Rabin test n times
+# Runs the Miller-Rabin test n times
 def passesMillerRabin(possiblePrime, n):
 
   maxDivisionsByTwo = 0
@@ -46,6 +46,7 @@ def passesMillerRabin(possiblePrime, n):
     maxDivisionsByTwo += 1
   assert (2**maxDivisionsByTwo * evenComponent == possiblePrime-1)
 
+  # Checks if number is a composite
   def trialComposite(roundTester):
     if pow(roundTester, evenComponent, possiblePrime) == 1:
       return False
@@ -54,28 +55,25 @@ def passesMillerRabin(possiblePrime, n):
         return False
     return True
 
-  for i in range(n + 1):
+  # Amount of times to run the test
+  for i in range(n):
     roundTester = random.randrange(2, possiblePrime)
     if trialComposite(roundTester):
       return False
   return True
 
-def main():
+# Generates a prime key
+def genKey(n):
+
   # Generates the first few primes
   genPrimesList(500)
 
   # Generates a Miller-Rabin approved prime
+  mrKey = ""
   while True:
-    number = getPossiblePrime(1024)   # Gets possible prime
-    if passesMillerRabin(number, 20):  # Runs the MR test with n rounds
-      print("MR:", number)
+    possiblePrime = getPossiblePrime(1024)   # Gets possible prime
+    if passesMillerRabin(possiblePrime, 20):  # Runs the MR test with n rounds
+      mrKey = possiblePrime
       break
-
-  # FOR TEST PURPOSES ONLY
-  from Crypto.Util import number
-  testPrime = number.getPrime(1024)
-  print("TEST:", testPrime)
-
-
-if __name__ == "__main__":
-    main()
+  
+  return mrKey
