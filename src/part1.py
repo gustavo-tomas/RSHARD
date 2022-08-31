@@ -71,7 +71,7 @@ def genKey(n):
   # Generates a Miller-Rabin approved prime
   mrKey = ""
   while True:
-    possiblePrime = getPossiblePrime(1024)   # Gets possible prime
+    possiblePrime = getPossiblePrime(n)   # Gets possible prime
     if passesMillerRabin(possiblePrime, 20):  # Runs the MR test with n rounds
       mrKey = possiblePrime
       break
