@@ -1,4 +1,5 @@
 import numpy as np
+import textwrap
 
 SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b', 'fe', 'd7', 'ab', '76'],
         ['ca', '82', 'c9', '7d', 'fa', '59', '47', 'f0', 'ad', 'd4', 'a2', 'af', '9c', 'a4', '72', 'c0'],
@@ -18,7 +19,36 @@ SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b',
         ['8c', 'a1', '89', '0d', 'bf', 'e6', '42', '68', '41', '99', '2d', '0f', 'b0', '54', 'bb', '16']]
                                                                       #A
 
-MIXMAT = [[2, 3, 1, 1],
-          [1, 2, 3, 1],
-          [1, 1, 2, 3],
-          [3, 1, 1, 2]]
+MIXMAT = [['02', '03', '01', '01'],
+          ['01', '02', '03', '01'],
+          ['01', '01', '02', '03'],
+          ['03', '01', '01', '02']]
+
+def mult2(v):
+  s = v << 1
+  s &= 0xff
+  if (v & 128) != 0:
+    s = s ^ 0x1b
+  return s
+
+def mult3(v):
+  return mult2(v) ^ v
+
+def gmul(a, b):
+  if b == 1:
+    return a
+  tmp = (a << 1) & 0xff
+  if b == 2:
+    return tmp if a < 128 else tmp ^ 0x1b
+  if b == 3:
+    return gmul(a, 2) ^ a
+
+def rotate_row_left(row):
+  first = row.pop(0)
+  row.append(first)
+  return row
+
+# @TODO
+def expand_key(key, rounds):
+
+  return key

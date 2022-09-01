@@ -1,7 +1,9 @@
 # Part 2 -> Cypher a message (AES-CTR mode)
 
 from part1 import genKey
-from utils import np, SBOX, MIXMAT
+from utils import SBOX, MIXMAT
+from utils import np, textwrap
+from utils import mult2, mult3, gmul, expand_key
 
 state = [['19', 'a0', '9a', 'e9'],
          ['3d', 'f4', 'c6', 'f8'],
@@ -10,39 +12,26 @@ state = [['19', 'a0', '9a', 'e9'],
 
 # Key and Plaintext -> 128 bit block
 def aesEnc(key, plaintext):
-  # key = hex(genKey(128))
 
-  print(hex(key))
-  subBytes(state) # for testing
-  shiftRows(state)
-  mixColumns(state)
-#   # Initial round
-#   addRoundKey()
+  mixColumns(state) # testing
 
-#   # Main rounds
-#   for round in range(0, 9):
-    # subBytes()
-    # shiftRows()
-#     mixColumns()
-#     addRoundKey()
+  # # Initial round
+  # addRoundKey(state, key)
 
-#   # Final round
-#   subBytes()
-#   shiftRows()
-#   addRoundKey()
+  # # Main rounds
+  # for round in range(0, 9):
+  #   subBytes(state)
+  #   shiftRows(state)
+  #   mixColumns(state)
+  #   addRoundKey(state, key)
+
+  # # Final round
+  # subBytes(state)
+  # shiftRows(state)
+  # addRoundKey(state, key)
 
   return
 
-# KeyExpansion – round keys are derived from the cipher key using the AES key schedule. AES requires a separate 128-bit round key block for each round plus one more.
-# Initial round key addition:
-
-# AddRoundKey – each byte of the state is combined with a byte of the round key using bitwise xor.
-
-# 9, 11 or 13 rounds:
-# SubBytes – a non-linear substitution step where each byte is replaced with another according to a lookup table.
-# ShiftRows – a transposition step where the last three rows of the state are shifted cyclically a certain number of steps.
-# MixColumns – a linear mixing operation which operates on the columns of the state, combining the four bytes in each column.
-# AddRoundKey
 def subBytes(state):
   for row in range(0, 4):
     for col in range(0, 4):
@@ -58,36 +47,41 @@ def shiftRows(state):
   return
 
 def mixColumns(state):
-  print("STATE:", state)
+  newState = [[0, 0, 0, 0],
+              [0, 0, 0, 0],
+              [0, 0, 0, 0],
+              [0, 0, 0, 0]]
 
-  column = []
-  for c in range(4):
-    column.append(state[0][c])
+  column = [0, 0, 0, 0]
 
-  result = [[0,0,0,0],
-          [0,0,0,0],
-          [0,0,0,0]]
-
-  # iterate through rows of X
   for i in range(4):
-    # iterate through columns of Y
     for j in range(4):
-      # iterate through rows of Y
-      for k in range(4):
-        result[i][j] += MIXMAT[i][k] * int(state[k][j], 16)
-        
-        for h in range(4):
-          print("RES:", result[h])
+      column[j] = int(state[i][j], 16)
+
+    newState[i][0] = hex(gmul(column[0], 2) ^ gmul(column[1], 3) ^ gmul(column[2], 1) ^ gmul(column[3], 1))[2:]
+    newState[i][1] = hex(gmul(column[0], 1) ^ gmul(column[1], 2) ^ gmul(column[2], 3) ^ gmul(column[3], 1))[2:]
+    newState[i][2] = hex(gmul(column[0], 1) ^ gmul(column[1], 1) ^ gmul(column[2], 2) ^ gmul(column[3], 3))[2:]
+    newState[i][3] = hex(gmul(column[0], 3) ^ gmul(column[1], 1) ^ gmul(column[2], 1) ^ gmul(column[3], 2))[2:]
   
- 
+  state = newState
+  print("STATE", state)
+
   return
 
-def addRoundKey():
+def addRoundKey(state, key):
+  for i in range(4):
+    for j in range(4):
+      state[i][j] = hex(int(state[i][j], 16) ^ int(key[i][j], 16))[2:]
+
   return
 
-# Final round (making 10, 12 or 14 rounds in total):
-# SubBytes
-# ShiftRows
-# AddRoundKey
+# Creates key and splits into a table
+keyList = textwrap.fill(hex(genKey(128))[2:], 2).split('\n')
+key = [[], [], [], []]
 
-aesEnc(genKey(128), 'lol')
+print("KEY:")
+for i in range(4):
+  key[i] = keyList[i:i+4]
+  print(key[i])
+
+aesEnc(key, 'lol')
