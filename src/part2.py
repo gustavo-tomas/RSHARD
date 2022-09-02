@@ -1,7 +1,7 @@
 # Part 2 -> Cypher a message (AES-CTR mode)
 
 from part1 import genKey
-from utils import SBOX, MIXMAT
+from utils import SBOX
 from utils import np, textwrap
 from utils import hexXor, strToGrid, gmul, expandKey, formatPlaintext, formatKey
 
