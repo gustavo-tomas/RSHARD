@@ -3,19 +3,19 @@
 from part1 import genKey
 from utils import SBOX
 from utils import np, textwrap
-from utils import hexXor, strToGrid, gmul, expandKey, formatPlaintext, formatKey
+from utils import strToGrid, gmul, expandKey
 
 # Key and Plaintext -> 128 bit block
-def aesEnc(key, plaintext):
+def aesEnc(key, plaintext, iv):
 
-  # Convert key to a 128 bit hex
-  key = ['19a09ae9', '3df4c6f8', 'e3e28d48', 'be2b2a08']
-
-  # Run AES for all states (blocks)
-  states = [strToGrid("0123456789abcdef0123456789abcdef"), strToGrid("abcdef0123456789abcdef0123456789")]
+  # Initializes the 128 bit counter
+  counter = "0" * 32
   blocks = []
   
-  for state in states:
+  # Runs AES for all blocks
+  for pText in plaintext:
+
+    state = strToGrid(f"{(int(iv, 16) + int(counter, 16)):032x}")
 
     # Key expansion
     expandedKey = textwrap.fill(''.join(expandKey(key, 11)), 32).split('\n')
@@ -38,8 +38,14 @@ def aesEnc(key, plaintext):
     state = shiftRows(state)
     state = addRoundKey(state, expandedKey[keyCounter])
 
+    # This is the step (Mi XOR Ek(IV + counter))
+    # the addRoundKey func was used for its convenience
+    state = addRoundKey(state, pText)
     blocks.append(state)
-  
+
+    # Increment counter
+    counter = f"{(int(counter, 16) + 1):032x}"
+
   return blocks
 
 def subBytes(state):
@@ -91,10 +97,21 @@ def addRoundKey(state, key):
       
   return state
 
-# key = ["0f1571c9", "47d9e859", "0cb7add6", "af7f6798"]
-key = "aaaaaaaaaaaaaaaa"
-plaintext = "abcdefghabcdefgh"
-blocks = aesEnc(key, plaintext)
+# Key, Plaintext and IV
+key       = "19a09ae93df4c6f8e3e28d48be2b2a08"
+plaintext = "1123456789abcdef0123456789abcdefabcdef0123456789abcdef0123456789"
+iv        = "01928374659987655443102938475621"
+
+# Hardcoded
+key = textwrap.fill(key, 8).split('\n')
+plaintext = textwrap.fill(plaintext, 32).split('\n')
+
+# Input
+# key = textwrap.fill(input("Enter key (Hexadecimal 32 digits): "), 8).split('\n')
+# plaintext = textwrap.fill(input("Enter plaintext (Blocks of 32 Hexadecimal digits): "), 32).split('\n')
+# iv = input("Enter IV (Hexadecimal 32 digits): ")
+
+blocks = aesEnc(key, plaintext, iv)
 
 for i in blocks:
   print(i)

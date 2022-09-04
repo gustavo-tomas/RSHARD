@@ -21,31 +21,6 @@ SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b',
                                                                       #A
 RCON = ['00000000', '01000000', '02000000', '04000000', '08000000', '10000000', '20000000', '40000000', '80000000', '1B000000', '36000000']
 
-def hexXor(hexStrA, hexStrB):
-  return ''.join(hex(int(a, 16) ^ int(b, 16))[2:] for a,b in zip(hexStrA, hexStrB))
-
-def formatPlaintext(plaintext):
-  while len(plaintext) % 16 != 0: # Plaintext must be at least 16 characters and a multiple of 16
-    plaintext += "0"
-  hexText = plaintext.encode('utf-8').hex()
-  
-  count = 0
-  block = ""
-  blocks = []
-  for i in hexText:
-    block += i
-    count += 1
-    if count == 32:
-      blocks += [block]
-      block = ""
-      count = 0
-
-  return blocks
-
-def formatKey(key):
-  hexKey = textwrap.fill(key.encode('utf-8').hex(), 8).split('\n')
-  return hexKey
-
 def strToGrid(str):
   # Convert string to a 4x4 grid
   strList = textwrap.fill(str, 2).split("\n")
@@ -81,6 +56,7 @@ def subWord(row):
   d = SBOX[int(row[6], 16)][int(row[7], 16)]
   return a + b + c + d
 
+# Might need to DRY that
 def expandKey(key, rounds):
   expandedKey = []
   n = 4 # 4 words for AES-128
@@ -89,12 +65,12 @@ def expandKey(key, rounds):
     if i < n:
       value = key[i]
     elif i >= n and i % n == 0:
-      value = hexXor(expandedKey[i - n], subWord(rotWord(expandedKey[i - 1])))
-      value = hexXor(value, RCON[i // n])
+      value = f"{int(expandedKey[i - n], 16) ^ int(subWord(rotWord(expandedKey[i - 1])), 16):08x}"
+      value = f"{int(value, 16) ^ int(RCON[i // n], 16):08x}"
     elif i >= n and n > 6 and i % n == 4:
-      value = hexXor(expandedKey[i - n], subWord(expandedKey[i - 1]))
+      value = f"{int(expandedKey[i - n], 16) ^ int(subWord(expandedKey[i - 1]), 16):08x}"
     else:
-      value = hexXor(expandedKey[i - n], expandedKey[i - 1])
+      value = f"{int(expandedKey[i - n], 16) ^ int(expandedKey[i - 1], 16):08x}"
     expandedKey.append(value)
 
   return expandedKey
