@@ -1,5 +1,8 @@
 import numpy as np
 import textwrap
+import random
+import math
+from base64 import b64encode, b64decode
 
 # AES -------------------------------------------------------------------------------------------------------
 SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b', 'fe', 'd7', 'ab', '76'],
@@ -74,3 +77,39 @@ def expandKey(key, rounds):
     expandedKey.append(value)
 
   return expandedKey
+
+# SHA3 ------------------------------------------------------------------------------------------------------
+def rot(a, n):
+  return ((a >> (64-(n%64))) + (a << (n%64))) % (1 << 64)
+
+def load(b):
+  return sum((b[i] << (8*i)) for i in range(8))
+
+def store(a):
+  return list((a >> (8*i)) % 256 for i in range(8))
+
+# RSA -------------------------------------------------------------------------------------------------------
+def power(x, y, p) :
+  res = 1
+  x = x % p
+
+  if (x == 0) :
+    return 0
+
+  while (y > 0) :
+    if ((y & 1) == 1) :
+      res = (res * x) % p
+    y = y >> 1
+    x = (x * x) % p
+        
+  return res
+
+# hex -> base64
+def hexToB64(s):
+  b64 = b64encode(bytes.fromhex(s)).decode()
+  return b64
+
+# base64 -> hex
+def B64ToHex(b64):
+  hexStr = b64decode(b64.encode()).hex()
+  return hexStr
