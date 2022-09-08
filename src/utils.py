@@ -40,6 +40,13 @@ def strToGrid(str):
 
   return grid
 
+# Convert 4x4 grid to string
+def gridToStr(grid: list) -> str:
+  s = list(i for j in grid for i in j)
+  s = ''.join(sum(grid, []))
+  
+  return s
+
 def gmul(a, b):
   if b == 1:
     return a
