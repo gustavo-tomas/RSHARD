@@ -1,6 +1,6 @@
 # Part 2 -> Cypher a message (AES-CTR mode)
 
-from key import genKey
+from key import genKeys
 from utils import SBOX
 from utils import np, textwrap
 from utils import strToGrid, gmul, expandKey

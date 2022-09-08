@@ -15,6 +15,9 @@ def decMessage(message: str, d: int, n: int) -> int:
 # Encrypt a message using RSA-OAEP
 def rsaEnc(message: bytes, n: int, e: int) -> str:
 
+  # Encrypt with aes @TODO ?
+
+
   # Encode message with OAEP
   em = oaepEnc(message)
 
