@@ -80,8 +80,8 @@ def genPrime(n):
 # Generates public and private key
 def genKeys(n):
 
-  p = genPrime(n // 2)    # p prime
-  q = genPrime(n // 2)    # q prime
+  p = genPrime(n)         # p prime
+  q = genPrime(n)         # q prime
   n = p * q               # n
   t = (p - 1) * (q - 1)   # t (Euler Totient)
 
@@ -91,7 +91,7 @@ def genKeys(n):
       break
 
   # Choose d
-  d = (t * 2 - 1)
+  d = (t * (t - 1) - 1)
 
   assert((e * d) % t == 1)
   return e, d, n

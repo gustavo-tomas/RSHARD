@@ -1,4 +1,4 @@
-from part1 import genKey
+from key import genKey
 
 def main():
   

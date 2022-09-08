@@ -1,5 +1,4 @@
-from utils import rot, load, store, power, hexToB64, B64ToHex
-from part1 import genKeys
+from utils import rot, load, store, hexToB64, B64ToHex
 
 # SHA3-256 --------------------------------------------------------------------------------------------------
 # Permutations (f1600)
@@ -82,49 +81,10 @@ def keccak(rate, capacity, inputBytes, suffix, outputByteLen):
 
   return outputBytes
 
-def SHA3_256(inputBytes):
+def sha3_256(inputBytes):
   return keccak(1088, 512, inputBytes, 0x06, 256//8)
 
-# RSA -------------------------------------------------------------------------------------------------------
-
-# Encrypt a message -> message**e % n
-def encMessage(message, e, n):
-  eVal = hex(power(message, e, n))[2:]
-  return eVal
-  
-# Decrypt a message -> message**d % n
-def decMessage(message, d, n):
-  dVal = power(int(message, 16), d, n)
-  return dVal
-
-# @TODO Fix BASE64 encoding
-message = "abcd"
-message = int(message.encode().hex(), 16)
-
-e, d, n = genKeys(1024)
-encMes = encMessage(message, e, n)
-decMes = decMessage(encMes, d, n)
-
-print("E:", e) 
-print("D:", d) 
-print("N:", n)
-
-print("    MESSAGE:", hex(message)[2:])
-print("ENC MESSAGE:", encMes)
-print("DEC MESSAGE:", hex(decMes)[2:])
-
-# print("PUBLIC KEY: ", hexToB64(hex(e)[2:]))
-# print("PRIVATE KEY:", hexToB64(hex(d)[2:]))
-
-# print()
-# print("    MESSAGE:", bytes.fromhex(hex(message)[2:]).decode('utf-8'))
-# print("ENC MESSAGE:", encMes)
-# print("DEC MESSAGE:", bytes.fromhex(hex(decMes)[2:]).decode('utf-8'))
-# assert(message == decMes)
-
-
-
 # SHA3-256
-# inputBytes = bytearray("0", "utf-8")
-# hashRes = SHA3_256(inputBytes)
-# print("RES", hashRes.hex())
+# inputBytes = bytearray("", "utf-8")
+# hashRes = sha3_256(inputBytes)
+# print("RES:", hashRes.hex())
