@@ -113,5 +113,5 @@ def power(x, y, p) :
 
 # B64 -------------------------------------------------------------------------------------------------------
 # Zero fill right shift
-def ZFRS(val, n):
+def zfrs(val, n):
   return (val >> n) if val >= 0 else ((val + 0x100000000) >> n)

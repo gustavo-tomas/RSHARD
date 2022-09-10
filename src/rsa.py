@@ -1,6 +1,7 @@
 from key import genKeys, genBit
 from oaep import oaepEnc, oaepDec
 from aes import aesEnc, aesDec
+from base64 import base64Enc, base64Dec
 from utils import power, gridToStr, strToGrid
 
 # Encrypt a message -> message**e % n
@@ -31,6 +32,10 @@ def rsaEnc(message: bytes, n: int, e: int, aesKey: str, aesIV: str) -> list:
 
     # Encrypt message with RSA
     encMes = encMessage(int(em.hex(), 16), int(e, 16), int(n, 16))
+
+    # Encode result in BASE64
+    encMes = base64Enc(encMes)
+
     encMesBlocks.append(encMes)
 
   return encMesBlocks
@@ -42,6 +47,9 @@ def rsaDec(encMes: list, n: int, d: int, aesKey: str, aesIV: str) -> str:
 
   for block in encMes:
     
+    # Decode BASE64 message
+    block = base64Dec(block)
+
     # Decrypt RSA cypher
     decMes = decMessage(block, int(d, 16), int(n, 16)).to_bytes(97, "big") # @TODO hardcoded 97 (16 bytes)
 

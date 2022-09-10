@@ -1,6 +1,6 @@
 # https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64
 from utils import re
-from utils import ZFRS
+from utils import zfrs
 
 base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
@@ -23,7 +23,7 @@ def base64Enc(s: str) -> str:
       r += "\r\n"
 
     n = (ord(s[c]) << 16) + (ord(s[c + 1]) << 8) + ord(s[c + 2])
-    n = [ZFRS(n, 18) & 63, ZFRS(n, 12) & 63, ZFRS(n, 6) & 63, n & 63]
+    n = [zfrs(n, 18) & 63, zfrs(n, 12) & 63, zfrs(n, 6) & 63, n & 63]
     
     for i in range(4):
       r += base64Chars[n[i]]
@@ -53,14 +53,15 @@ def base64Dec(s: str) -> str:
     n = (base64Chars.index(s[c]) << 18) + (base64Chars.index(s[c+1]) << 12)
     n += (base64Chars.index(s[c+2]) << 6) + base64Chars.index(s[c+3])
 
-    r += chr(ZFRS(n, 16) & 255)
-    r += chr(ZFRS(n, 8) & 255)
+    r += chr(zfrs(n, 16) & 255)
+    r += chr(zfrs(n, 8) & 255)
     r += chr(n & 255)
 
   return r[0:len(r)-len(p)]
 
-b64encoded = base64Enc("boiboiboiboidacarapretapegaessemeninhoquetemmedodecareta")
-print("B64", b64encoded)
+# DEBUG
+# b64encoded = base64Enc("boiboiboiboidacarapretapegaessemeninhoquetemmedodecareta")
+# print("B64", b64encoded)
 
-b64decoded = base64Dec(b64encoded)
-print("DEC", b64decoded)
+# b64decoded = base64Dec(b64encoded)
+# print("DEC", b64decoded)
