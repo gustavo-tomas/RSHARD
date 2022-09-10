@@ -6,7 +6,11 @@ from utils import np, textwrap
 from utils import strToGrid, gridToStr, gmul, expandKey
 
 # Key and Plaintext -> 128 bit block
-def aesEnc(key, plaintext, iv):
+def aesEnc(key: str, plaintext: str, iv: str) -> list:
+
+  # Format params
+  key = textwrap.fill(key, 8).split('\n')
+  plaintext = textwrap.fill(plaintext, 32).split('\n')
 
   # Initializes the 128 bit counter
   counter = "0" * 32
@@ -49,14 +53,13 @@ def aesEnc(key, plaintext, iv):
   return blocks
 
 # Key and CypherText -> Plaintext
-def aesDec(key, cypheredBlocks, iv) -> str:
+def aesDec(key: str, cypheredBlocks: list, iv: str) -> str:
   
   # Convert cypher to a string
   blockStr = ""
   for block in cypheredBlocks:
     blockStr += gridToStr(block)
 
-  blockStr = textwrap.fill(blockStr, 32).split('\n')
   decBlocks = aesEnc(key, blockStr, iv)
 
   # Convert cypher to a string
@@ -116,28 +119,24 @@ def addRoundKey(state, key):
   return state
 
 # Key, Plaintext and IV
-key       = "19a09ae93df4c6f8e3e28d48be2b2a08"
-plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
-iv        = "01928374659987655443102938475621"
-
-# Hardcoded
-key = textwrap.fill(key, 8).split('\n')
-formPlaintext = textwrap.fill(plaintext, 32).split('\n')
+# key       = "19a09ae93df4c6f8e3e28d48be2b2a08"
+# plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
+# iv        = "01928374659987655443102938475621"
 
 # Input
-# key = textwrap.fill(input("Enter key (Hexadecimal 32 digits): "), 8).split('\n')
-# plaintext = textwrap.fill(input("Enter plaintext (Blocks of 32 Hexadecimal digits): "), 32).split('\n')
-# iv = input("Enter IV (Hexadecimal 32 digits): ")
+# key = "Enter key (Hexadecimal 32 digits): "
+# plaintext = "Enter plaintext (Blocks of 32 Hexadecimal digits): "
+# iv = "Enter IV (Hexadecimal 32 digits): "
 
-blocks = aesEnc(key, formPlaintext, iv)
-decMes = aesDec(key, blocks, iv)
+# blocks = aesEnc(key, plaintext, iv)
+# decMes = aesDec(key, blocks, iv)
 
-print("PLAINTEXT:", plaintext)
+# print("PLAINTEXT:", plaintext)
 
-print("\nAES-CTR ENCODED:")
-for i in blocks:
-  print(i)
+# print("\nAES-CTR ENCODED:")
+# for i in blocks:
+#   print(i)
 
-print("\nAES-CTR DECODED:", decMes)
+# print("\nAES-CTR DECODED:", decMes)
 
-assert(decMes == plaintext)
+# assert(decMes == plaintext)

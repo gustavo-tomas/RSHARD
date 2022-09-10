@@ -1,4 +1,4 @@
-from utils import rot, load, store, hexToB64, B64ToHex
+from utils import rot, load, store
 
 # SHA3-256 --------------------------------------------------------------------------------------------------
 # Permutations (f1600)

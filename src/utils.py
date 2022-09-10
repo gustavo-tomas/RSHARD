@@ -2,7 +2,7 @@ import numpy as np
 import textwrap
 import random
 import math
-from base64 import b64encode, b64decode
+import re
 
 # AES -------------------------------------------------------------------------------------------------------
 SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b', 'fe', 'd7', 'ab', '76'],
@@ -111,12 +111,7 @@ def power(x, y, p) :
         
   return res
 
-# hex -> base64
-def hexToB64(s):
-  b64 = b64encode(bytes.fromhex(s)).decode()
-  return b64
-
-# base64 -> hex
-def B64ToHex(b64):
-  hexStr = b64decode(b64.encode()).hex()
-  return hexStr
+# B64 -------------------------------------------------------------------------------------------------------
+# Zero fill right shift
+def ZFRS(val, n):
+  return (val >> n) if val >= 0 else ((val + 0x100000000) >> n)
