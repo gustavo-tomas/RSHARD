@@ -15,11 +15,11 @@ def decMessage(message: str, d: int, n: int) -> int:
   return dVal
 
 # Encrypt a message using RSA-OAEP
-def rsaEnc(message: bytes, n: int, e: int, aesKey: str, aesIV: str) -> list:
+def rsaEnc(message: str, n: int, e: int, aesKey: str, aesIV: str) -> list:
 
   # Encrypt with AES @TODO ? @HARDCODED
   # Encrypt message (16 byte blocks)
-  aesMes = aesEnc(aesKey, plaintext, aesIV)
+  aesMes = aesEnc(aesKey, message, aesIV)
 
   # List of AES-OAEP-RSA encrypted blocks
   encMesBlocks = []
@@ -63,35 +63,33 @@ def rsaDec(encMes: list, n: int, d: int, aesKey: str, aesIV: str) -> str:
   return decAesMes
 
 # DEBUG
-e, d, n = genKeys(1024)
-e = hex(e)[2:]
-d = hex(d)[2:]
-n = hex(n)[2:]
+# e, d, n = genKeys(1024)
+# e = hex(e)[2:]
+# d = hex(d)[2:]
+# n = hex(n)[2:]
 
-print("\nE:", e)
-print("\nD:", d)
-print("\nN:", n)
+# print("\nE:", e)
+# print("\nD:", d)
+# print("\nN:", n)
 
-# Plaintext => 128 bits - 16 bytes - 32 digit hexadecimal string
-plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
-# aesKey    = "19a09ae93df4c6f8e3e28d48be2b2a08"
-# aesIV     = "01928374659987655443102938475621"
+# # Plaintext => 128 bits - 16 bytes - 32 digit hexadecimal string
+# plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
+# # aesKey    = "19a09ae93df4c6f8e3e28d48be2b2a08"
+# # aesIV     = "01928374659987655443102938475621"
 
-# Generate random 128 bit key and IV for AES
-aesKey = f"{genBit(128):032x}"
-aesIV  = f"{genBit(128):032x}"
+# # Generate random 128 bit key and IV for AES
+# aesKey = f"{genBit(128):032x}"
+# aesIV  = f"{genBit(128):032x}"
 
-print("\nAES KEY:", aesKey)
-print("\nAES IV:", aesIV)
-print("\nPLAINTEXT:", plaintext)
+# print("\nAES KEY:", aesKey)
+# print("\nAES IV:", aesIV)
+# print("\nPLAINTEXT:", plaintext)
 
-byteMessage = bytearray.fromhex(plaintext)
+# rsaEncBlocks = rsaEnc(plaintext, n, e, aesKey, aesIV)
+# print("\nRSA ENC:")
+# for block in rsaEncBlocks: print(block)
 
-rsaEncBlocks = rsaEnc(byteMessage, n, e, aesKey, aesIV)
-print("\nRSA ENC:")
-for block in rsaEncBlocks: print(block)
+# rsaDecMes = rsaDec(rsaEncBlocks, n, d, aesKey, aesIV)
+# print("\nRSA DEC:", rsaDecMes)
 
-rsaDecMes = rsaDec(rsaEncBlocks, n, d, aesKey, aesIV)
-print("\nRSA DEC:", rsaDecMes)
-
-assert(rsaDecMes == plaintext)
+# assert(rsaDecMes == plaintext)
