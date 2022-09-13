@@ -1,7 +1,6 @@
 # Part 1 -> Generate a 1024 bit prime
 
-import random
-import math
+from utils import random, math
 
 # Generate a random number between 2^(n-1) + 1 and 2^(n) - 1 -> avoid small primes
 def genBit(n):
@@ -62,18 +61,37 @@ def passesMillerRabin(possiblePrime, n):
       return False
   return True
 
-# Generates a prime key
-def genKey(n):
+# Generates a prime number
+def genPrime(n):
 
   # Generates the first few primes
   genPrimesList(500)
 
   # Generates a Miller-Rabin approved prime
-  mrKey = ""
+  primeNum = ""
   while True:
-    possiblePrime = getPossiblePrime(1024)   # Gets possible prime
+    possiblePrime = getPossiblePrime(n)   # Gets possible prime
     if passesMillerRabin(possiblePrime, 20):  # Runs the MR test with n rounds
-      mrKey = possiblePrime
+      primeNum = possiblePrime
       break
   
-  return mrKey
+  return primeNum
+
+# Generates public and private key
+def genKeys(n):
+
+  p = genPrime(n)         # p prime
+  q = genPrime(n)         # q prime
+  n = p * q               # n
+  t = (p - 1) * (q - 1)   # t (Euler Totient)
+
+  # Choose e
+  for e in range(t - 1, 1, -1):
+    if math.gcd(e, t) == 1 and math.gcd(e, n) == 1:
+      break
+
+  # Choose d
+  d = (t * (t - 1) - 1)
+
+  assert((e * d) % t == 1)
+  return e, d, n
