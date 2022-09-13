@@ -25,7 +25,7 @@ def oaepEnc(m: bytes) -> [bytes, bytes]:
 
   mLen = len(m)                                               # Message length in bytes
   hLen = len(lHash)                                           # Hash length in bytes
-  k = 3 * hLen + 1                                            # RSA % n in bytes @TODO (2 * hLen + 1 ?)
+  k = 3 * hLen + 1                                            # RSA % n in bytes (2 * hLen + 1 ?)
   psLen = k - mLen - 2 * hLen - 2                             # PS length
   ps = bytearray([0x00 for i in range(psLen)])                # Generate a padding string
 
@@ -40,10 +40,9 @@ def oaepEnc(m: bytes) -> [bytes, bytes]:
   
   return em, lHash
 
-# OAEP decoding function
+# OAEP decoding function (inverse of oaepEnc)
 def oaepDec(em: bytes, lHash: bytes) -> bytes:
 
-  # lHash = sha3_256(bytearray("", "utf-8"))                    # Hash label (label is "")
   hLen = len(lHash)
   k = 3 * hLen + 1
   emWithoutZero = em.split(b'\x00', 1)[1]

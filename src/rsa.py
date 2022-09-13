@@ -1,4 +1,4 @@
-from key import genKeys, genBit
+from key import genBit
 from oaep import oaepEnc, oaepDec
 from aes import aesEnc, aesDec
 from base64 import base64Enc, base64Dec
@@ -34,6 +34,7 @@ def rsaEnc(message: str, n: str, e: str) -> [list, str, str, str]:
   print("\nHASH:", lHash.hex())
   print("\nAES KEY:", aesKey)
   print("\nAES IV:", aesIV)
+  print("\nAES KEY PADDED WITH OAEP:", oaepEncAesKey.hex())
   print("\nAES KEY PADDED WITH OAEP AND ENCRYPTED WITH RSA:", rsaEncKey)
   print("\nHASH ENCRYPTED WITH RSA:", rsaEncHash)
   print("\nMESSAGE ENCRYPTED WITH AES:")

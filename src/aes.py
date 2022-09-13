@@ -1,6 +1,3 @@
-# Part 2 -> Cypher a message (AES-CTR mode)
-
-from key import genKeys
 from utils import SBOX
 from utils import np, textwrap
 from utils import strToGrid, gridToStr, gmul, expandKey
@@ -69,7 +66,7 @@ def aesDec(key: str, cypheredBlocks: list, iv: str) -> str:
 
   return decMes
 
-def subBytes(state):
+def subBytes(state: list) -> list:
   for row in range(0, 4):
     for col in range(0, 4):
       newState = SBOX[int(state[row][col][0], 16)][int(state[row][col][1], 16)]
@@ -77,7 +74,7 @@ def subBytes(state):
  
   return state
 
-def shiftRows(state):
+def shiftRows(state: list) -> list:
   for row in range(4):
     column = []
     for col in range(4):
@@ -89,7 +86,7 @@ def shiftRows(state):
     
   return state
 
-def mixColumns(state):
+def mixColumns(state: list) -> list:
   newState = [[0, 0, 0, 0],
               [0, 0, 0, 0],
               [0, 0, 0, 0],
@@ -110,7 +107,7 @@ def mixColumns(state):
 
   return state
 
-def addRoundKey(state, key):
+def addRoundKey(state: list, key: str) -> list:
   gridKey = strToGrid(key)
   for i in range(4):
     for j in range(4):

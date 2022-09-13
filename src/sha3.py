@@ -1,6 +1,12 @@
-from utils import rot, load, store
+def rot(a, n):
+  return ((a >> (64-(n%64))) + (a << (n%64))) % (1 << 64)
 
-# SHA3-256 --------------------------------------------------------------------------------------------------
+def load(b):
+  return sum((b[i] << (8*i)) for i in range(8))
+
+def store(a):
+  return list((a >> (8*i)) % 256 for i in range(8))
+
 # Permutations (f1600)
 def keccak_f(state):
   lanes = [[load(state[8*(x+5*y):8*(x+5*y)+8]) for y in range(5)] for x in range(5)]
@@ -81,5 +87,6 @@ def keccak(rate, capacity, inputBytes, suffix, outputByteLen):
 
   return outputBytes
 
-def sha3_256(inputBytes):
+# Hash function -> output len = 256 bits
+def sha3_256(inputBytes: bytearray) -> bytearray:
   return keccak(1088, 512, inputBytes, 0x06, 256//8)

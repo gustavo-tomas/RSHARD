@@ -24,8 +24,8 @@ SBOX = [['63', '7c', '77', '7b', 'f2', '6b', '6f', 'c5', '30', '01', '67', '2b',
                                                                       #A
 RCON = ['00000000', '01000000', '02000000', '04000000', '08000000', '10000000', '20000000', '40000000', '80000000', '1B000000', '36000000']
 
-def strToGrid(str):
-  # Convert string to a 4x4 grid
+# Convert string to a 4x4 grid
+def strToGrid(str: str) -> list:
   strList = textwrap.fill(str, 2).split("\n")
   row = []
   grid = []
@@ -47,7 +47,8 @@ def gridToStr(grid: list) -> str:
   
   return s
 
-def gmul(a, b):
+# Special multiplication (Galois Fields)
+def gmul(a: int, b: int) -> int:
   if b == 1:
     return a
   tmp = (a << 1) & 0xff
@@ -56,18 +57,20 @@ def gmul(a, b):
   if b == 3:
     return gmul(a, 2) ^ a
 
-def rotWord(row):
+# Rotate the last and first positions of a word
+def rotWord(row: str) -> str:
   return row[2:] + row[:2]
 
-def subWord(row):
+# Subtraction operation in MixColumns
+def subWord(row: str) -> str:
   a = SBOX[int(row[0], 16)][int(row[1], 16)]
   b = SBOX[int(row[2], 16)][int(row[3], 16)]
   c = SBOX[int(row[4], 16)][int(row[5], 16)]
   d = SBOX[int(row[6], 16)][int(row[7], 16)]
   return a + b + c + d
 
-# Might need to DRY that
-def expandKey(key, rounds):
+# Key expansion phase in AES
+def expandKey(key: str, rounds: int) -> list:
   expandedKey = []
   n = 4 # 4 words for AES-128
   for i in range(4 * rounds):
@@ -85,18 +88,10 @@ def expandKey(key, rounds):
 
   return expandedKey
 
-# SHA3 ------------------------------------------------------------------------------------------------------
-def rot(a, n):
-  return ((a >> (64-(n%64))) + (a << (n%64))) % (1 << 64)
-
-def load(b):
-  return sum((b[i] << (8*i)) for i in range(8))
-
-def store(a):
-  return list((a >> (8*i)) % 256 for i in range(8))
-
 # RSA -------------------------------------------------------------------------------------------------------
-def power(x, y, p) :
+
+# Modular exponentiation (X^Y % P)
+def power(x: int, y: int, p: int) -> int:
   res = 1
   x = x % p
 
@@ -113,5 +108,5 @@ def power(x, y, p) :
 
 # B64 -------------------------------------------------------------------------------------------------------
 # Zero fill right shift
-def zfrs(val, n):
+def zfrs(val: int, n: int) -> int:
   return (val >> n) if val >= 0 else ((val + 0x100000000) >> n)

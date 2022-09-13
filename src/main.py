@@ -1,4 +1,4 @@
-from key import genKeys, genBit
+from key import genKeys
 from rsa import rsaEnc, rsaDec
 
 def main():

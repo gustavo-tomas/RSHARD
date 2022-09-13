@@ -1,16 +1,14 @@
-# Part 1 -> Generate a 1024 bit prime
-
 from utils import random, math
 
 # Generate a random number between 2^(n-1) + 1 and 2^(n) - 1 -> avoid small primes
-def genBit(n):
+def genBit(n: int) -> int:
   return random.randrange(2**(n-1) + 1, 2**(n) - 1)
 
 # List of the first few primes
 primesList = []
 
 # Generates first few primes using the sieve of eratosthenes
-def genPrimesList(n):
+def genPrimesList(n: int) -> None:
   prime = [True for i in range(n + 1)]
   p = 2
 
@@ -25,7 +23,7 @@ def genPrimesList(n):
       primesList.append(p)
 
 # Tests if generated number of n bits is prime
-def getPossiblePrime(n):
+def getPossiblePrime(n: int) -> int:
   while True:
     primeCandidate = genBit(n)
     for divisor in primesList:
@@ -35,7 +33,7 @@ def getPossiblePrime(n):
         return primeCandidate
 
 # Runs the Miller-Rabin test n times
-def passesMillerRabin(possiblePrime, n):
+def passesMillerRabin(possiblePrime: int, n: int) -> bool:
 
   maxDivisionsByTwo = 0
   evenComponent = possiblePrime-1
@@ -46,7 +44,7 @@ def passesMillerRabin(possiblePrime, n):
   assert (2**maxDivisionsByTwo * evenComponent == possiblePrime-1)
 
   # Checks if number is a composite
-  def trialComposite(roundTester):
+  def trialComposite(roundTester: int) -> bool:
     if pow(roundTester, evenComponent, possiblePrime) == 1:
       return False
     for i in range(maxDivisionsByTwo):
@@ -62,7 +60,7 @@ def passesMillerRabin(possiblePrime, n):
   return True
 
 # Generates a prime number
-def genPrime(n):
+def genPrime(n: int) -> int:
 
   # Generates the first few primes
   genPrimesList(500)
@@ -77,8 +75,8 @@ def genPrime(n):
   
   return primeNum
 
-# Generates public and private key
-def genKeys(n):
+# Generates public and private key with size n
+def genKeys(n: int) -> [int, int, int]:
 
   p = genPrime(n)         # p prime
   q = genPrime(n)         # q prime
