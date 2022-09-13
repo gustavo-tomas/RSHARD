@@ -83,8 +83,3 @@ def keccak(rate, capacity, inputBytes, suffix, outputByteLen):
 
 def sha3_256(inputBytes):
   return keccak(1088, 512, inputBytes, 0x06, 256//8)
-
-# SHA3-256
-# inputBytes = bytearray("", "utf-8")
-# hashRes = sha3_256(inputBytes)
-# print("RES:", hashRes.hex())

@@ -117,26 +117,3 @@ def addRoundKey(state, key):
       state[i][j] = f"{int(state[i][j], 16) ^ int(gridKey[i][j], 16):02x}"
       
   return state
-
-# Key, Plaintext and IV
-# key       = "19a09ae93df4c6f8e3e28d48be2b2a08"
-# plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
-# iv        = "01928374659987655443102938475621"
-
-# Input
-# key = "Enter key (Hexadecimal 32 digits): "
-# plaintext = "Enter plaintext (Blocks of 32 Hexadecimal digits): "
-# iv = "Enter IV (Hexadecimal 32 digits): "
-
-# blocks = aesEnc(key, plaintext, iv)
-# decMes = aesDec(key, blocks, iv)
-
-# print("PLAINTEXT:", plaintext)
-
-# print("\nAES-CTR ENCODED:")
-# for i in blocks:
-#   print(i)
-
-# print("\nAES-CTR DECODED:", decMes)
-
-# assert(decMes == plaintext)

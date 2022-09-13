@@ -14,82 +14,64 @@ def decMessage(message: str, d: int, n: int) -> int:
   dVal = power(int(message, 16), d, n)
   return dVal
 
-# Encrypt a message using RSA-OAEP
-def rsaEnc(message: str, n: int, e: int, aesKey: str, aesIV: str) -> list:
+# Encrypt a message using AES (and the hash function, aes key with RSA)
+def rsaEnc(message: str, n: str, e: str) -> [list, str, str, str]:
 
-  # Encrypt with AES @TODO ? @HARDCODED
-  # Encrypt message (16 byte blocks)
-  aesMes = aesEnc(aesKey, message, aesIV)
+  # Generate random 128 bit key and IV for AES
+  aesKey = f"{genBit(128):032x}"
+  aesIV  = f"{genBit(128):032x}"
 
-  # List of AES-OAEP-RSA encrypted blocks
+  # Encrypt message with AES
+  aesEncMes = aesEnc(aesKey, message, aesIV)
+  
+  # Encode aes key with OAEP
+  oaepEncAesKey, lHash = oaepEnc(bytearray().fromhex(aesKey))
+
+  # Encrypt hash and aes key with RSA
+  rsaEncHash = encMessage(int(lHash.hex(), 16), int(e, 16), int(n, 16))
+  rsaEncKey  = encMessage(int(oaepEncAesKey.hex(), 16), int(e, 16), int(n, 16))
+
+  print("\nHASH:", lHash.hex())
+  print("\nAES KEY:", aesKey)
+  print("\nAES IV:", aesIV)
+  print("\nAES KEY PADDED WITH OAEP AND ENCRYPTED WITH RSA:", rsaEncKey)
+  print("\nHASH ENCRYPTED WITH RSA:", rsaEncHash)
+  print("\nMESSAGE ENCRYPTED WITH AES:")
+
+  # List of BASE64 encoded blocks
   encMesBlocks = []
 
-  for block in aesMes:
-    
-    # Encode block with OAEP
-    byteBlock = bytearray.fromhex(gridToStr(block))
-    em = oaepEnc(byteBlock)
-
-    # Encrypt message with RSA
-    encMes = encMessage(int(em.hex(), 16), int(e, 16), int(n, 16))
-
-    # Encode result in BASE64
-    encMes = base64Enc(encMes)
-
+  # Encode result in BASE64
+  for block in aesEncMes:
+    encMes = base64Enc(gridToStr(block))
     encMesBlocks.append(encMes)
+    print(encMes)
 
-  return encMesBlocks
+  return encMesBlocks, rsaEncHash, rsaEncKey, aesIV
 
-# Decrypt a message encoded with RSA-OAEP
-def rsaDec(encMes: list, n: int, d: int, aesKey: str, aesIV: str) -> str:
+# Decrypt a message encoded with AES (and decrypt the previous encoded/encrypted values)
+def rsaDec(encMes: list, n: str, d: str, rsaEncHash: str, rsaEncKey: str, aesIV: str) -> str:
   
+  # Decrypt hash and aes key
+  lHash = decMessage(rsaEncHash, int(d, 16), int(n, 16)).to_bytes(32, "big")
+  decAesKey = decMessage(rsaEncKey, int(d, 16), int(n, 16)).to_bytes(97, "big")
+
+  # Decode aes key
+  aesKey = oaepDec(decAesKey, lHash).hex()
+
+  # List of decoded BASE64 blocks
   decMesBlocks = []
 
+  # Decode BASE64 blocks
   for block in encMes:
-    
-    # Decode BASE64 message
-    block = base64Dec(block)
-
-    # Decrypt RSA cypher
-    decMes = decMessage(block, int(d, 16), int(n, 16)).to_bytes(97, "big") # @TODO hardcoded 97 (16 bytes)
-
-    # Decode OAEP message
-    m = oaepDec(decMes).hex()
-    decMesBlocks.append(strToGrid(m))
+    decBlock = base64Dec(block)
+    decMesBlocks.append(strToGrid(decBlock))
   
   # Decrypt AES blocks
   decAesMes = aesDec(aesKey, decMesBlocks, aesIV)
 
+  print("\nDECRYPTED HASH:", lHash.hex())
+  print("\nDECRYPTED AES KEY:", aesKey)
+  print("\nDECRYPTED AES BLOCKS:", decAesMes)
+
   return decAesMes
-
-# DEBUG
-# e, d, n = genKeys(1024)
-# e = hex(e)[2:]
-# d = hex(d)[2:]
-# n = hex(n)[2:]
-
-# print("\nE:", e)
-# print("\nD:", d)
-# print("\nN:", n)
-
-# # Plaintext => 128 bits - 16 bytes - 32 digit hexadecimal string
-# plaintext = "1123456789abcdef0123477789abcdefabcdef0123456789abcdef0123456789aedfaedfaedfaedfaedfaedfaedfaedf"
-# # aesKey    = "19a09ae93df4c6f8e3e28d48be2b2a08"
-# # aesIV     = "01928374659987655443102938475621"
-
-# # Generate random 128 bit key and IV for AES
-# aesKey = f"{genBit(128):032x}"
-# aesIV  = f"{genBit(128):032x}"
-
-# print("\nAES KEY:", aesKey)
-# print("\nAES IV:", aesIV)
-# print("\nPLAINTEXT:", plaintext)
-
-# rsaEncBlocks = rsaEnc(plaintext, n, e, aesKey, aesIV)
-# print("\nRSA ENC:")
-# for block in rsaEncBlocks: print(block)
-
-# rsaDecMes = rsaDec(rsaEncBlocks, n, d, aesKey, aesIV)
-# print("\nRSA DEC:", rsaDecMes)
-
-# assert(rsaDecMes == plaintext)

@@ -58,10 +58,3 @@ def base64Dec(s: str) -> str:
     r += chr(n & 255)
 
   return r[0:len(r)-len(p)]
-
-# DEBUG
-# b64encoded = base64Enc("boiboiboiboidacarapretapegaessemeninhoquetemmedodecareta")
-# print("B64", b64encoded)
-
-# b64decoded = base64Dec(b64encoded)
-# print("DEC", b64decoded)

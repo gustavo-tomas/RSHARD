@@ -19,7 +19,7 @@ def mgf1(seed: bytes, length: int, hash_func=hashlib.sha3_256) -> bytes:
   return T[:length]
 
 # OAEP encoding function
-def oaepEnc(m: bytes) -> bytes:
+def oaepEnc(m: bytes) -> [bytes, bytes]:
 
   lHash = sha3_256(bytearray("", "utf-8"))                    # Hash label (label is "")
 
@@ -38,12 +38,12 @@ def oaepEnc(m: bytes) -> bytes:
   maskedSeed = bytes(a ^ b for (a, b) in zip(seed, seedMask)) # Mask the seed with the generated mask
   em = b'\x00' + maskedSeed + maskedDB                        # Make padded message
   
-  return em
+  return em, lHash
 
 # OAEP decoding function
-def oaepDec(em: bytes) -> bytes:
+def oaepDec(em: bytes, lHash: bytes) -> bytes:
 
-  lHash = sha3_256(bytearray("", "utf-8"))                    # Hash label (label is "")
+  # lHash = sha3_256(bytearray("", "utf-8"))                    # Hash label (label is "")
   hLen = len(lHash)
   k = 3 * hLen + 1
   emWithoutZero = em.split(b'\x00', 1)[1]
@@ -60,13 +60,3 @@ def oaepDec(em: bytes) -> bytes:
   m = db
 
   return m
-
-# message = bytearray([0x03 for i in range(16)]) # 16 bytes - increase k for larger size
-# print("MESSAGE:", message.hex())
-
-# em = oaepEnc(message)
-# print("EM:", em.hex())
-
-# m = oaepDec(em)
-# print("M:", m.hex())
-# assert(m == message)
