@@ -1,6 +1,13 @@
 # RSHARD
 RSA? Nunca nem vi. Aqui é RSHARD.
 
+Trabalho 2 de Segurança Computacional - UnB - 2022/1.
+
+Gustavo Tomás de Paula - 190014148
+
+Mateus de Paula Rodrigues - 190015793
+
+
 ## Funcionamento
 Para rodar o programa, execute:  
 ```
